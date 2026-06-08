@@ -1,0 +1,6 @@
+node_modules/
+.localstack/
+cypress/videos/
+cypress/screenshots/
+.env
+node_modules
