@@ -1,4 +1,9 @@
 <img width="1916" height="1023" alt="Screenshot 2026-06-09 152442" src="https://github.com/user-attachments/assets/dd8a1064-8597-4852-87ae-204c47aeea34" />
+<img width="1917" height="1013" alt="Screenshot 2026-06-09 152502" src="https://github.com/user-attachments/assets/217ab391-52aa-4e98-8766-dd195d5445fb" />
+<img width="1917" height="1022" alt="Screenshot 2026-06-09 152451" src="https://github.com/user-attachments/assets/72a3c475-d350-4855-acec-6fb7d7947689" />
+
+
+
 # ⚡ Платформа управления энергопотреблением (Enterprise Energy) — Песочница для QA-автоматизаторов
 
 Добро пожаловать в обучающий репозиторий для интернов и младших QA-инженеров! Этот проект представляет собой изолированную «песочницу» (sandbox), созданную для прокачки навыков **гибридного тестирования** (ручное тестирование + автоматизация) на современной микросервисной архитектуре.
