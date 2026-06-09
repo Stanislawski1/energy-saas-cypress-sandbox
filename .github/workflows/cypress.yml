@@ -1,0 +1,98 @@
+# .github/workflows/cypress.yml
+#
+# CI/CD Pipeline — Cypress End-to-End Tests
+#
+# INTERN GUIDE:
+# ─────────────────────────────────────────────────────────────────────────────
+# This workflow runs automatically whenever code is pushed to `main` or a
+# pull request is opened targeting `main`.
+#
+# What it does:
+#  1. Checks out the repository code.
+#  2. Sets up Node.js (version matches our local dev environment).
+#  3. Installs all dependencies (npm ci is faster & stricter than npm install).
+#  4. Sets up the SQLite database via Prisma migrations + seeds mock data.
+#  5. Starts our Express server in the background.
+#  6. Runs all Cypress feature tests headlessly (no browser window needed in CI).
+#
+# How to see results:
+#  - Go to the "Actions" tab on GitHub after pushing a commit.
+#  - Each run shows pass/fail per test, screenshots on failure, and video
+#    recordings of the test run (saved as artifacts for 7 days).
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: Cypress E2E Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  cypress-run:
+    name: Run Cypress Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Get the code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # Step 3: Install dependencies (clean install — uses package-lock.json)
+      - name: Install dependencies
+        run: npm ci
+
+      # Step 4: Set up the database
+      # - Runs the Prisma migration to create the SQLite schema
+      # - Seeds the database with mock users (admin/password123, demo/demo)
+      - name: Run Prisma migrations and seed
+        run: |
+          npx prisma migrate deploy
+          npx prisma db seed
+        env:
+          DATABASE_URL: file:./prisma/dev.db
+
+      # Step 5 & 6: Start server and run Cypress tests
+      # The `cypress-io/github-action` handles:
+      #   - Starting our Express server (`start: npm start`)
+      #   - Waiting for it to be ready on port 3000 (`wait-on`)
+      #   - Running all Cypress specs headlessly
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v6
+        with:
+          start: npm start
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 30
+          browser: chrome
+          headless: true
+        env:
+          DATABASE_URL: file:./prisma/dev.db
+          JWT_SECRET: ci_test_secret_key
+
+      # Step 7: Upload screenshots on failure (great for debugging)
+      - name: Upload Cypress screenshots on failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          retention-days: 7
+
+      # Step 8: Always upload videos for review
+      - name: Upload Cypress videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
+          retention-days: 7
