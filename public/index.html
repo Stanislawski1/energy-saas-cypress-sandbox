@@ -3,117 +3,396 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nexus Energy - B2B SaaS</title>
-  <meta name="description" content="Next-generation B2B Energy Management Platform">
+  <title>Nexus Energy — Enterprise Platform</title>
+  <meta name="description" content="Next-generation B2B Energy Management & Analytics Platform">
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'brand-cyan': '#00f2fe',
+            'brand-blue': '#4facfe',
+            'brand-purple': '#8b5cf6',
+            'surface': '#1e293b',
+            'surface-dark': '#0f172a',
+            'surface-darker': '#0b0f19',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            heading: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom CSS (animations & glassmorphism not easily done in Tailwind alone) -->
   <link rel="stylesheet" href="style.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-  <!-- Login Page -->
-  <div id="login-page" class="page active">
+<body class="bg-surface-darker text-slate-100 font-sans antialiased">
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       LOGIN PAGE
+  ════════════════════════════════════════════════════════════════════════ -->
+  <div id="login-page" class="page active min-h-screen flex items-center justify-center relative overflow-hidden">
+    <!-- Ambient glow orbs -->
     <div class="glow-orb orb-1"></div>
     <div class="glow-orb orb-2"></div>
-    
-    <div class="login-container glass-panel">
-      <div class="logo">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <div class="glow-orb orb-3"></div>
+
+    <div class="glass-panel login-container w-full max-w-md mx-4 p-10 relative z-10">
+      <!-- Logo -->
+      <div class="flex items-center justify-center gap-3 mb-2">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="url(#lg1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <defs>
-            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#00f2fe" />
-              <stop offset="100%" stop-color="#4facfe" />
+            <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#00f2fe"/>
+              <stop offset="100%" stop-color="#4facfe"/>
             </linearGradient>
           </defs>
           <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
         </svg>
-        <h1>Nexus Energy</h1>
+        <h1 class="font-heading font-bold text-3xl gradient-text">Nexus Energy</h1>
       </div>
-      <p class="subtitle">Enter your credentials to access the portal</p>
-      
-      <form id="login-form">
-        <div class="input-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" placeholder="admin or demo" required>
+      <p class="text-center text-slate-400 text-sm mb-8 font-medium tracking-wide uppercase">Enterprise Energy Management</p>
+
+      <form id="login-form" class="space-y-5">
+        <div>
+          <label for="username" class="block text-sm font-medium text-slate-400 mb-2">Username</label>
+          <input type="text" id="username" placeholder="admin or demo" required
+            class="w-full px-4 py-3 bg-slate-900/60 border border-white/10 rounded-xl text-white placeholder-slate-600
+                   focus:outline-none focus:border-brand-cyan focus:ring-2 focus:ring-brand-cyan/20 transition-all duration-200">
         </div>
-        <div class="input-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" placeholder="••••••••" required>
+        <div>
+          <label for="password" class="block text-sm font-medium text-slate-400 mb-2">Password</label>
+          <input type="password" id="password" placeholder="••••••••" required
+            class="w-full px-4 py-3 bg-slate-900/60 border border-white/10 rounded-xl text-white placeholder-slate-600
+                   focus:outline-none focus:border-brand-cyan focus:ring-2 focus:ring-brand-cyan/20 transition-all duration-200">
         </div>
-        <div id="login-error" class="error-msg"></div>
-        <button type="submit" class="btn primary-btn" id="login-btn">
-          <span>Sign In</span>
+
+        <div id="login-error" class="text-red-400 text-sm text-center min-h-[20px]"></div>
+
+        <button type="submit" id="login-btn"
+          class="w-full py-3 px-6 rounded-xl font-heading font-semibold text-surface-dark flex items-center justify-center gap-2
+                 bg-gradient-to-r from-brand-cyan to-brand-blue hover:shadow-lg hover:shadow-brand-cyan/30
+                 hover:-translate-y-0.5 transition-all duration-200 active:scale-95">
+          <span id="login-btn-text">Sign In to Platform</span>
           <div class="loader hidden" id="login-loader"></div>
         </button>
       </form>
+
+      <p class="text-center text-slate-600 text-xs mt-6">
+        Demo credentials: <span class="text-slate-400">admin / password123</span>
+      </p>
     </div>
   </div>
 
-  <!-- Dashboard Page -->
-  <div id="dashboard-page" class="page hidden">
-    <nav class="navbar glass-panel">
-      <div class="logo">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       APP SHELL (Sidebar + Content) — hidden until logged in
+  ════════════════════════════════════════════════════════════════════════ -->
+  <div id="app-shell" class="hidden min-h-screen flex">
+
+    <!-- ── Sidebar ── -->
+    <aside id="sidebar" class="sidebar-panel w-64 flex-shrink-0 flex flex-col py-6 px-4 min-h-screen relative z-20">
+      <!-- Brand -->
+      <div class="flex items-center gap-3 px-3 mb-10">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
         </svg>
-        <h2>Nexus Energy</h2>
+        <span class="font-heading font-bold text-xl gradient-text">Nexus</span>
       </div>
-      <div class="user-profile">
-        <span id="user-company" class="company-badge">Loading...</span>
-        <button id="logout-btn" class="btn secondary-btn">Sign Out</button>
-      </div>
-    </nav>
 
-    <main class="dashboard-content">
-      <header class="dashboard-header">
-        <div>
-          <h1>Real-time Telemetry</h1>
-          <p class="date-display" id="current-date">Fetching data...</p>
+      <!-- User info -->
+      <div class="glass-panel px-4 py-3 mb-8 flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-brand-cyan to-brand-purple flex items-center justify-center text-surface-dark font-bold text-sm flex-shrink-0" id="user-avatar">A</div>
+        <div class="overflow-hidden">
+          <div class="text-sm font-semibold text-slate-100 truncate" id="sidebar-username">Admin</div>
+          <div class="text-xs text-slate-400 truncate" id="sidebar-company">Loading...</div>
         </div>
-        <button id="generate-billing-btn" class="btn primary-btn pulse">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <line x1="16" y1="13" x2="8" y2="13"></line>
-            <line x1="16" y1="17" x2="8" y2="17"></line>
-            <polyline points="10 9 9 9 8 9"></polyline>
+      </div>
+
+      <!-- Nav -->
+      <nav class="flex-1 space-y-1" role="navigation" aria-label="Main navigation">
+        <button id="nav-dashboard" data-tab="dashboard"
+          class="nav-item nav-item-active w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
           </svg>
-          Generate Invoice
+          Dashboard
         </button>
+
+        <button id="nav-billing" data-tab="billing"
+          class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          Billing
+        </button>
+
+        <button id="nav-reports" data-tab="reports"
+          class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+          Reports
+        </button>
+      </nav>
+
+      <!-- Sidebar footer -->
+      <div class="mt-auto pt-6 border-t border-white/5">
+        <button id="logout-btn"
+          class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-400
+                 hover:bg-red-500/10 hover:text-red-400 transition-all duration-200">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- ── Main Content Area ── -->
+    <main class="flex-1 overflow-auto">
+      <!-- Top bar -->
+      <header class="sticky top-0 z-10 glass-panel-flat flex items-center justify-between px-8 py-4 border-b border-white/5">
+        <div>
+          <h2 id="page-title" class="font-heading font-semibold text-xl">Dashboard</h2>
+          <p id="page-subtitle" class="text-slate-400 text-sm">Real-time energy telemetry</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="current-date" class="text-sm text-slate-400"></span>
+          <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="System operational"></div>
+          <span class="text-xs text-emerald-400 font-medium">LIVE</span>
+        </div>
       </header>
 
+      <!-- Toast notification -->
       <div id="toast" class="toast hidden"></div>
 
-      <div class="stats-grid">
-        <div class="stat-card glass-panel">
-          <h3>Total Consumption</h3>
-          <div class="stat-value"><span id="total-consumption">--</span> <span class="unit">kWh</span></div>
-          <div class="stat-trend positive">↑ 12% vs last month</div>
-        </div>
-        <div class="stat-card glass-panel">
-          <h3>Peak Demand</h3>
-          <div class="stat-value"><span id="peak-demand">--</span> <span class="unit">kW</span></div>
-          <div class="stat-trend negative">↓ 3% vs last month</div>
-        </div>
-        <div class="stat-card glass-panel">
-          <h3>Active Sensors</h3>
-          <div class="stat-value">24 <span class="unit">Nodes</span></div>
-          <div class="stat-trend neutral">All systems nominal</div>
-        </div>
-      </div>
+      <!-- ─── TAB: DASHBOARD ─── -->
+      <section id="tab-dashboard" class="tab-panel p-8">
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div class="glass-panel p-6 group hover:-translate-y-1 transition-transform duration-300">
+            <div class="flex items-start justify-between mb-4">
+              <div class="p-2 rounded-lg bg-brand-cyan/10">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              </div>
+              <span class="text-xs font-medium text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full">↑ 12%</span>
+            </div>
+            <p class="text-slate-400 text-sm mb-1">Total Consumption</p>
+            <div class="font-heading font-bold text-3xl"><span id="total-consumption">--</span> <span class="text-lg text-slate-400 font-normal">kWh</span></div>
+          </div>
 
-      <div class="chart-container glass-panel">
-        <div class="chart-header">
-          <h3>Hourly Energy Consumption</h3>
+          <div class="glass-panel p-6 group hover:-translate-y-1 transition-transform duration-300">
+            <div class="flex items-start justify-between mb-4">
+              <div class="p-2 rounded-lg bg-brand-blue/10">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4facfe" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <span class="text-xs font-medium text-red-400 bg-red-400/10 px-2 py-1 rounded-full">↓ 3%</span>
+            </div>
+            <p class="text-slate-400 text-sm mb-1">Peak Demand</p>
+            <div class="font-heading font-bold text-3xl"><span id="peak-demand">--</span> <span class="text-lg text-slate-400 font-normal">kW</span></div>
+          </div>
+
+          <div class="glass-panel p-6 group hover:-translate-y-1 transition-transform duration-300">
+            <div class="flex items-start justify-between mb-4">
+              <div class="p-2 rounded-lg bg-brand-purple/10">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <span class="text-xs font-medium text-slate-400 bg-slate-400/10 px-2 py-1 rounded-full">Nominal</span>
+            </div>
+            <p class="text-slate-400 text-sm mb-1">Active Sensors</p>
+            <div class="font-heading font-bold text-3xl">24 <span class="text-lg text-slate-400 font-normal">Nodes</span></div>
+          </div>
         </div>
-        <div class="chart-wrapper">
-          <canvas id="telemetryChart"></canvas>
+
+        <!-- Chart -->
+        <div class="glass-panel p-6">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="font-heading font-semibold text-lg">Hourly Energy Consumption</h3>
+              <p class="text-slate-400 text-sm mt-1">24-hour rolling window</p>
+            </div>
+            <button id="refresh-telemetry-btn"
+              class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-slate-300
+                     bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-200">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
+            </button>
+          </div>
+          <div class="relative h-80">
+            <canvas id="telemetryChart"></canvas>
+          </div>
         </div>
-      </div>
+      </section>
+
+      <!-- ─── TAB: BILLING ─── -->
+      <section id="tab-billing" class="tab-panel hidden p-8">
+        <div class="max-w-4xl">
+          <!-- Generate Invoice Card -->
+          <div class="glass-panel p-6 mb-8 border border-brand-cyan/20">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-heading font-semibold text-lg mb-1">Invoice Generation</h3>
+                <p class="text-slate-400 text-sm">Create a new billing invoice for the current cycle.</p>
+              </div>
+              <button id="generate-billing-btn"
+                class="flex items-center gap-2 px-6 py-3 rounded-xl font-heading font-semibold text-surface-dark text-sm
+                       bg-gradient-to-r from-brand-cyan to-brand-blue hover:shadow-lg hover:shadow-brand-cyan/30
+                       hover:-translate-y-0.5 transition-all duration-200 active:scale-95 whitespace-nowrap">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="12" y1="13" x2="12" y2="17"/><line x1="10" y1="15" x2="14" y2="15"/>
+                </svg>
+                <span id="billing-btn-text">Generate Invoice</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Invoice History Table -->
+          <div class="glass-panel p-6">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="font-heading font-semibold text-lg">Invoice History</h3>
+              <button id="refresh-billing-btn"
+                class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400
+                       bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-200">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                Refresh
+              </button>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm" id="invoice-table">
+                <thead>
+                  <tr class="border-b border-white/10">
+                    <th class="text-left text-slate-400 font-medium py-3 px-2">#</th>
+                    <th class="text-left text-slate-400 font-medium py-3 px-2">Date</th>
+                    <th class="text-left text-slate-400 font-medium py-3 px-2">Amount</th>
+                    <th class="text-left text-slate-400 font-medium py-3 px-2">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="invoice-tbody">
+                  <tr>
+                    <td colspan="4" class="text-center text-slate-500 py-10">
+                      <div class="loader mx-auto mb-2" style="border-color:rgba(255,255,255,0.1);border-top-color:#00f2fe"></div>
+                      Loading invoices...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── TAB: REPORTS ─── -->
+      <section id="tab-reports" class="tab-panel hidden p-8">
+        <div class="max-w-4xl">
+          <div class="glass-panel p-8 mb-6">
+            <div class="flex items-center gap-4 mb-6">
+              <div class="p-3 rounded-xl bg-brand-purple/10">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-heading font-semibold text-lg">Data Export</h3>
+                <p class="text-slate-400 text-sm">Download your energy data in standard formats for external analysis.</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Monthly Report Card -->
+              <div class="rounded-xl border border-white/10 bg-white/5 p-5 flex flex-col gap-3 hover:border-brand-cyan/30 hover:bg-white/8 transition-all duration-200">
+                <div class="flex items-center gap-3">
+                  <div class="p-2 rounded-lg bg-brand-cyan/10">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                      <polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-sm">Monthly Consumption Report</p>
+                    <p class="text-slate-400 text-xs">May 2026 · CSV Format</p>
+                  </div>
+                </div>
+                <p class="text-slate-400 text-xs leading-relaxed">
+                  Hourly energy consumption and peak demand data for all 24 monitoring nodes across the billing cycle.
+                </p>
+                <button id="download-monthly-csv"
+                  class="mt-auto flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg text-sm font-semibold text-surface-dark
+                         bg-gradient-to-r from-brand-cyan to-brand-blue hover:shadow-md hover:shadow-brand-cyan/20
+                         hover:-translate-y-0.5 transition-all duration-200 active:scale-95">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                  Download report_may_2026.csv
+                </button>
+              </div>
+
+              <!-- Annual Summary Card -->
+              <div class="rounded-xl border border-white/10 bg-white/5 p-5 flex flex-col gap-3 hover:border-brand-purple/30 hover:bg-white/8 transition-all duration-200">
+                <div class="flex items-center gap-3">
+                  <div class="p-2 rounded-lg bg-brand-purple/10">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-sm">Annual Summary Report</p>
+                    <p class="text-slate-400 text-xs">FY 2026 · CSV Format</p>
+                  </div>
+                </div>
+                <p class="text-slate-400 text-xs leading-relaxed">
+                  Aggregated monthly consumption totals, cost breakdowns, and efficiency scores for the full fiscal year.
+                </p>
+                <button id="download-annual-csv"
+                  class="mt-auto flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg text-sm font-semibold
+                         text-slate-300 border border-brand-purple/40 bg-brand-purple/10
+                         hover:bg-brand-purple/20 hover:-translate-y-0.5 transition-all duration-200 active:scale-95">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                  Download annual_summary_2026.csv
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Downloads Log -->
+          <div class="glass-panel p-6">
+            <h3 class="font-heading font-semibold text-lg mb-4">Download History</h3>
+            <div id="download-log" class="space-y-2 text-sm">
+              <p class="text-slate-500 text-sm">No downloads yet this session.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </main>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

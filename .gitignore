@@ -4,3 +4,8 @@ cypress/videos/
 cypress/screenshots/
 .env
 node_modules
+
+# Prisma
+/generated/prisma
+*.db
+*.db-journal
